@@ -43,8 +43,6 @@
   </script>
 
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap");
-
     :root {
       --bg: #f2efff;
       --white: #ffffff;
@@ -62,7 +60,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: "Inter", sans-serif;
+      font-family: Inter, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       -webkit-font-smoothing: antialiased;
@@ -82,7 +80,7 @@
     }
 
     .brand {
-      font-size: 38px;
+      font-size: 36px;
       font-weight: 700;
       color: var(--green);
       text-decoration: none;
@@ -94,25 +92,31 @@
       border: 1px solid var(--border);
       border-radius: 30px;
       padding: 3px;
-      background: #e5e3f0;
+      background: #e8e6f2;
     }
 
     .tab {
       border: 0;
       background: transparent;
       border-radius: 30px;
-      height: 42px;
+      height: 38px;
       padding: 0 18px;
-      font-size: 23px;
+      font-size: 15px;
       color: var(--muted);
       cursor: pointer;
-      font-weight: 500;
+      font-weight: 600;
       white-space: nowrap;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     .tab.active {
       background: var(--green);
       color: #fff;
+      box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .tab:not(.active):hover {
+      background: #dddae9;
     }
 
     .header-icons {
@@ -131,11 +135,11 @@
     }
 
     .page {
-      max-width: 1440px;
+      max-width: 1240px;
       margin: 0 auto;
       padding: 36px 28px 40px;
       display: grid;
-      grid-template-columns: 420px 1fr;
+      grid-template-columns: 360px 1fr;
       gap: 28px;
       align-items: start;
     }
@@ -152,7 +156,7 @@
     }
 
     .title {
-      font-size: 48px;
+      font-size: 40px;
       font-weight: 700;
       line-height: 1.08;
       margin-bottom: 16px;
@@ -164,7 +168,7 @@
 
     .field > label {
       display: block;
-      font-size: 22px;
+      font-size: 13px;
       letter-spacing: 0.07em;
       text-transform: uppercase;
       color: var(--muted);
@@ -178,7 +182,7 @@
       border: 1px solid var(--border);
       border-radius: 5px;
       background: var(--field);
-      font-size: 34px;
+      font-size: 30px;
       color: var(--muted);
       padding: 12px;
     }
@@ -214,7 +218,7 @@
     .dropdown.show { display: block; }
 
     .dropdown-item {
-      font-size: 28px;
+      font-size: 22px;
       padding: 10px 12px;
       color: var(--muted);
       cursor: pointer;
@@ -232,7 +236,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 34px;
+      font-size: 30px;
       color: var(--muted);
       padding-right: 10px;
     }
@@ -262,7 +266,7 @@
     }
 
     .add-city .plus {
-      font-size: 32px;
+      font-size: 28px;
       line-height: 0;
       margin-top: -3px;
     }
@@ -291,7 +295,7 @@
     }
 
     .result-city {
-      font-size: 48px;
+      font-size: 42px;
       font-weight: 700;
       line-height: 1.2;
     }
@@ -303,7 +307,7 @@
       align-items: center;
       gap: 8px;
       padding: 5px 12px;
-      font-size: 23px;
+      font-size: 17px;
       font-weight: 600;
       white-space: nowrap;
     }
@@ -313,13 +317,13 @@
     .badge.worse { background: #f7e3e3; color: #7f1d1d; }
 
     .meta-label {
-      font-size: 23px;
+      font-size: 16px;
       color: var(--muted);
       margin-bottom: 6px;
     }
 
     .money {
-      font-size: 56px;
+      font-size: 50px;
       font-weight: 700;
       margin-bottom: 14px;
       line-height: 1.06;
@@ -338,7 +342,7 @@
     .vline { width: 1px; background: var(--border); }
 
     .split-label {
-      font-size: 22px;
+      font-size: 13px;
       letter-spacing: 0.07em;
       text-transform: uppercase;
       color: var(--muted);
@@ -346,7 +350,7 @@
     }
 
     .split-value {
-      font-size: 38px;
+      font-size: 34px;
       font-weight: 600;
       color: var(--text);
     }
@@ -356,7 +360,7 @@
       justify-content: space-between;
       gap: 10px;
       margin-bottom: 10px;
-      font-size: 33px;
+      font-size: 24px;
     }
 
     .delta-row .label { color: var(--muted); }
@@ -384,7 +388,7 @@
       border: 1px solid var(--border);
       border-radius: 5px;
       padding: 12px;
-      font-size: 34px;
+      font-size: 30px;
       color: var(--muted);
       line-height: 1.25;
     }
@@ -397,7 +401,7 @@
       background: #eef8ff;
       border-radius: 10px;
       padding: 12px;
-      font-size: 24px;
+      font-size: 18px;
       color: #1d3557;
     }
 
@@ -408,13 +412,13 @@
       background: #1d9bf0;
       color: #fff;
       padding: 8px 14px;
-      font-size: 18px;
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
     }
 
     .footer {
-      max-width: 1440px;
+      max-width: 1240px;
       margin: 0 auto;
       padding: 0 28px 30px;
       font-size: 14px;
@@ -450,13 +454,13 @@
       .page { padding: 16px 14px 24px; gap: 16px; }
       .panel { padding: 14px; }
       .title, .result-city { font-size: 34px; }
-      .field > label, .meta-label, .split-label { font-size: 14px; }
-      .input, .city-chip, .add-city, .liner { font-size: 28px; min-height: 46px; }
-      .money { font-size: 46px; }
+      .field > label, .meta-label, .split-label { font-size: 12px; }
+      .input, .city-chip, .add-city, .liner { font-size: 24px; min-height: 46px; }
+      .money { font-size: 40px; }
       .split-value { font-size: 30px; }
-      .delta-row { font-size: 24px; }
+      .delta-row { font-size: 20px; }
       .badge { font-size: 16px; min-height: 28px; }
-      .tweet { font-size: 18px; }
+      .tweet { font-size: 16px; }
     }
   </style>
 </head>
@@ -550,6 +554,17 @@
       { rate: 0.37, threshold: 609350 }
     ];
     const STANDARD_DEDUCTION_2024_SINGLE = 14600;
+    let apiAvailable = location.protocol !== "file:";
+    const FALLBACK_CITIES = [
+      { id: "nyc", name: "New York City", state: "NY", colIndex: 128, stateTaxRate: 5.85, medianRent1BR: 4100, avgCommuteCostMonthly: 132 },
+      { id: "sf", name: "San Francisco", state: "CA", colIndex: 122, stateTaxRate: 9.3, medianRent1BR: 3100, avgCommuteCostMonthly: 98 },
+      { id: "austin", name: "Austin", state: "TX", colIndex: 101, stateTaxRate: 0, medianRent1BR: 1575, avgCommuteCostMonthly: 42 },
+      { id: "denver", name: "Denver", state: "CO", colIndex: 100.4, stateTaxRate: 4.4, medianRent1BR: 1455, avgCommuteCostMonthly: 88 },
+      { id: "portland", name: "Portland", state: "OR", colIndex: 112, stateTaxRate: 9.9, medianRent1BR: 1500, avgCommuteCostMonthly: 70 },
+      { id: "boise", name: "Boise", state: "ID", colIndex: 101.7, stateTaxRate: 5.8, medianRent1BR: 1500, avgCommuteCostMonthly: 45 },
+      { id: "raleigh", name: "Raleigh", state: "NC", colIndex: 102.5, stateTaxRate: 4.5, medianRent1BR: 1575, avgCommuteCostMonthly: 55 },
+      { id: "seattle", name: "Seattle", state: "WA", colIndex: 118, stateTaxRate: 0, medianRent1BR: 2040, avgCommuteCostMonthly: 99 }
+    ];
 
     function byId(id) {
       return state.cities.find((city) => city.id === id);
@@ -631,11 +646,16 @@
     }
 
     async function apiCalculate(payload) {
+      if (!apiAvailable) throw new Error("API disabled");
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 1200);
       const response = await fetch("/api/calculate", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: controller.signal
       });
+      clearTimeout(timer);
       if (!response.ok) throw new Error(`API ${response.status}`);
       const json = await response.json();
       return json.result;
@@ -779,6 +799,7 @@
           });
           cards = result.cards || [];
         } catch (_error) {
+          apiAvailable = false;
           cards = fallbackCompareResult(source);
         }
         results.innerHTML = cards.map((card) => makeCard(card, source)).join("") || "<article class=\"result-card\"><p class=\"liner\">Add up to 3 target cities to compare.</p></article>";
@@ -795,6 +816,7 @@
             miscMonthly: state.miscMonthly
           });
         } catch (_error) {
+          apiAvailable = false;
           result = fallbackRemoteResult(source, target);
         }
         results.innerHTML = renderRemoteCard(result, source, target);
@@ -893,8 +915,12 @@
     }
 
     async function init() {
-      const response = await fetch("./data/cities.json", { cache: "no-store" });
-      state.cities = await response.json();
+      try {
+        const response = await fetch("./data/cities.json", { cache: "no-store" });
+        state.cities = await response.json();
+      } catch (_error) {
+        state.cities = FALLBACK_CITIES;
+      }
       if (!byId(state.sourceCityId)) state.sourceCityId = state.cities[0].id;
       if (!byId(state.targetCityId)) state.targetCityId = state.cities[1].id;
 
@@ -903,8 +929,16 @@
       setupCitySearch("source");
       setupCitySearch("target");
 
-      document.getElementById("tab-col").addEventListener("click", () => { state.mode = "col"; render(); });
-      document.getElementById("tab-remote").addEventListener("click", () => { state.mode = "remote"; render(); });
+      document.getElementById("tab-col").addEventListener("click", () => {
+        state.mode = "col";
+        applyModeUI();
+        render();
+      });
+      document.getElementById("tab-remote").addEventListener("click", () => {
+        state.mode = "remote";
+        applyModeUI();
+        render();
+      });
       document.getElementById("add-city-btn").addEventListener("click", () => document.getElementById("search-target").focus());
 
       document.getElementById("input-salary").addEventListener("input", (e) => { state.salary = formatField(e.target); render(); });
