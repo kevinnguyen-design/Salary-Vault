@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Work ROI Calculator — Is Taking a Pay Cut Worth It?</title>
+    <meta name="description" content="Find out if working remotely for less money actually pays off after taxes, rent, and commute costs. Free calculator.">
+    
+    <!-- OG Tags -->
+    <meta property="og:title" content="Remote Work ROI Calculator — Is Taking a Pay Cut Worth It?">
+    <meta property="og:description" content="Calculate your true take-home pay after rent, taxes, and commute.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://salaryvault.com">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg: #0a0a0a;
+            --card-bg: #161616;
+            --border: #2a2a2a;
+            --text: #f0f0f0;
+            --text-muted: #94a3b8;
+            --accent: #f59e0b; /* Amber */
+            --primary: #059669; /* Emerald */
+            --better: #22c55e;
+            --worse: #ef4444;
+            --similar: #94a3b8;
+            --input-bg: #1e1e1e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--card-bg);
+            padding: 4px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: var(--text-muted);
+            border: none;
+            background: transparent;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            outline: none;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--primary);
+        }
+
+        .city-select-wrapper {
+            position: relative;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        .dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .dropdown-item:hover {
+            background: var(--input-bg);
+            color: var(--primary);
+        }
+
+        .result-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-better { background: rgba(34, 197, 94, 0.2); color: var(--better); }
+        .badge-worse { background: rgba(239, 68, 68, 0.2); color: var(--worse); }
+        .badge-similar { background: rgba(148, 163, 184, 0.2); color: var(--similar); }
+
+        .big-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin: 20px 0;
+        }
+
+        .stat-item span:first-child {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .stat-item span:last-child {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .delta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .delta-label { font-size: 14px; color: var(--text-muted); }
+        .delta-value { font-weight: 600; }
+        .delta-value.positive { color: var(--better); }
+        .delta-value.negative { color: var(--worse); }
+
+        .progress-bar {
+            height: 10px;
+            background: var(--border);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease-out, background-color 0.5s;
+        }
+
+        .one-liner {
+            background: rgba(5, 150, 105, 0.1);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .one-liner strong { color: var(--primary); }
+
+        .tweet-card {
+            margin-top: 30px;
+            background: rgba(29, 155, 240, 0.1);
+            border: 1px solid rgba(29, 155, 240, 0.2);
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        .tweet-text {
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .copy-btn {
+            background: #1d9bf0;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .ad-slot {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #111;
+            border: 1px dashed #333;
+            color: #444;
+            margin: 20px 0;
+            font-size: 12px;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding: 30px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .target-cities-list {
+            margin-top: 10px;
+        }
+
+        .selected-city {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--input-bg);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            border: 1px solid var(--border);
+        }
+
+        .remove-city {
+            color: var(--worse);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        #ad-mobile { display: none; }
+        @media (max-width: 767px) {
+            #ad-top { display: none; }
+            #ad-mobile { 
+                display: flex; 
+                position: fixed; 
+                bottom: 0; 
+                left: 0; 
+                right: 0; 
+                z-index: 1000;
+                margin: 0;
+                height: 50px;
+            }
+            body { padding-bottom: 60px; }
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <a href="#" class="logo">SalaryVault</a>
+        <div class="tabs">
+            <button class="tab" id="tab-col" onclick="switchMode('col')">Compare Cities</button>
+            <button class="tab active" id="tab-remote" onclick="switchMode('remote')">Remote ROI</button>
+        </div>
+        <div style="display: flex; gap: 15px;">
+            <!-- Social Icons placeholder -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor: pointer; color: var(--text-muted);"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+        </div>
+    </header>
+
+    <div id="ad-top" class="ad-slot" style="height: 90px;">ADVERTISEMENT (728x90)</div>
+
+    <div class="main-grid">
+        <!-- Sidebar Inputs -->
+        <div class="card" id="inputs-panel">
+            <h2 id="mode-title" style="margin-bottom: 24px;">Remote ROI</h2>
+            
+            <div class="input-group">
+                <label id="salary-label">Current Salary (Office)</label>
+                <div class="input-wrapper">
+                    <input type="text" id="input-salary" placeholder="120,000" oninput="handleInput()">
+                </div>
+            </div>
+
+            <div id="remote-salary-group" class="input-group">
+                <label>Proposed Remote Salary</label>
+                <div class="input-wrapper">
+                    <input type="text" id="input-remote-salary" placeholder="110,000" oninput="handleInput()">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label id="city-label">Current City</label>
+                <div class="city-select-wrapper">
+                    <input type="text" id="search-source" placeholder="Search city..." onfocus="showDropdown('source')" oninput="filterCities('source')">
+                    <div id="dropdown-source" class="dropdown"></div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label id="target-label">Target City (to move to)</label>
+                <div class="city-select-wrapper">
+                    <input type="text" id="search-target" placeholder="Search city..." onfocus="showDropdown('target')" oninput="filterCities('target')">
+                    <div id="dropdown-target" class="dropdown"></div>
+                </div>
+                <div id="target-cities-list" class="target-cities-list hidden"></div>
+            </div>
+
+            <div id="expenses-group">
+                <div class="input-group">
+                    <label>Commute Cost/Month</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="input-commute" placeholder="200" oninput="handleInput()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Work Wardrobe/Lunch/Misc</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="input-misc" value="300" oninput="handleInput()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div id="results-panel">
+            <!-- Dynamic Content -->
+        </div>
+    </div>
+
+    <footer>
+        <p>Not financial advice. Tax estimates use standard deduction, single filer, 2024 federal brackets. State taxes are flat estimates.</p>
+        <p>Data sourced from BLS, Census, and public CoL indices (2024).</p>
+        <div style="margin-top: 15px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor: pointer;"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+        </div>
+    </footer>
+</div>
+
+<div id="ad-mobile" class="ad-slot">ADVERTISEMENT (320x50)</div>
+
+<script>
+    const CITIES = [
+        { id: 'nyc', name: 'New York City', state: 'NY', colIndex: 128, stateTaxRate: 5.85, medianRent1BR: 4100, avgCommute: 132, market: 'saturated' },
+        { id: 'sf', name: 'San Francisco', state: 'CA', colIndex: 122, stateTaxRate: 9.3, medianRent1BR: 3100, avgCommute: 98, market: 'saturated' },
+        { id: 'austin', name: 'Austin', state: 'TX', colIndex: 101, stateTaxRate: 0, medianRent1BR: 1575, avgCommute: 42, market: 'competitive' },
+        { id: 'denver', name: 'Denver', state: 'CO', colIndex: 100.4, stateTaxRate: 4.4, medianRent1BR: 1455, avgCommute: 88, market: 'competitive' },
+        { id: 'seattle', name: 'Seattle', state: 'WA', colIndex: 118, stateTaxRate: 0, medianRent1BR: 2040, avgCommute: 99, market: 'saturated' },
+        { id: 'chicago', name: 'Chicago', state: 'IL', colIndex: 105, stateTaxRate: 4.95, medianRent1BR: 2280, avgCommute: 75, market: 'saturated' },
+        { id: 'boston', name: 'Boston', state: 'MA', colIndex: 125, stateTaxRate: 5.0, medianRent1BR: 3150, avgCommute: 90, market: 'saturated' },
+        { id: 'atlanta', name: 'Atlanta', state: 'GA', colIndex: 102, stateTaxRate: 5.49, medianRent1BR: 1650, avgCommute: 95, market: 'competitive' },
+        { id: 'miami', name: 'Miami', state: 'FL', colIndex: 115, stateTaxRate: 0, medianRent1BR: 2435, avgCommute: 100, market: 'competitive' },
+        { id: 'boise', name: 'Boise', state: 'ID', colIndex: 101.7, stateTaxRate: 5.8, medianRent1BR: 1500, avgCommute: 45, market: 'open' },
+        { id: 'tulsa', name: 'Tulsa', state: 'OK', colIndex: 86.4, stateTaxRate: 4.75, medianRent1BR: 975, avgCommute: 40, market: 'open' },
+        { id: 'knoxville', name: 'Knoxville', state: 'TN', colIndex: 89.5, stateTaxRate: 0, medianRent1BR: 1525, avgCommute: 45, market: 'open' },
+        { id: 'chattanooga', name: 'Chattanooga', state: 'TN', colIndex: 90.2, stateTaxRate: 0, medianRent1BR: 1400, avgCommute: 40, market: 'open' },
+        { id: 'greenville', name: 'Greenville', state: 'SC', colIndex: 93.2, stateTaxRate: 6.4, medianRent1BR: 1375, avgCommute: 45, market: 'open' },
+        { id: 'cosprings', name: 'Colorado Springs', state: 'CO', colIndex: 100.4, stateTaxRate: 4.4, medianRent1BR: 1475, avgCommute: 50, market: 'open' },
+        { id: 'spokane', name: 'Spokane', state: 'WA', colIndex: 97.5, stateTaxRate: 0, medianRent1BR: 1325, avgCommute: 40, market: 'open' },
+        { id: 'fayetteville', name: 'Fayetteville', state: 'AR', colIndex: 88.7, stateTaxRate: 4.4, medianRent1BR: 1175, avgCommute: 35, market: 'open' },
+        { id: 'desmoines', name: 'Des Moines', state: 'IA', colIndex: 90.8, stateTaxRate: 5.7, medianRent1BR: 1100, avgCommute: 35, market: 'open' },
+        { id: 'columbus', name: 'Columbus', state: 'OH', colIndex: 94.8, stateTaxRate: 3.5, medianRent1BR: 1300, avgCommute: 50, market: 'open' },
+        { id: 'omaha', name: 'Omaha', state: 'NE', colIndex: 92.6, stateTaxRate: 5.84, medianRent1BR: 1150, avgCommute: 40, market: 'open' },
+        { id: 'richmond', name: 'Richmond', state: 'VA', colIndex: 96.1, stateTaxRate: 5.75, medianRent1BR: 1525, avgCommute: 50, market: 'open' },
+        { id: 'raleigh', name: 'Raleigh', state: 'NC', colIndex: 102.5, stateTaxRate: 4.5, medianRent1BR: 1575, avgCommute: 55, market: 'open' },
+        { id: 'asheville', name: 'Asheville', state: 'NC', colIndex: 106.8, stateTaxRate: 4.5, medianRent1BR: 1675, avgCommute: 40, market: 'open' },
+        { id: 'flagstaff', name: 'Flagstaff', state: 'AZ', colIndex: 116.2, stateTaxRate: 2.5, medianRent1BR: 1925, avgCommute: 30, market: 'open' },
+        { id: 'missoula', name: 'Missoula', state: 'MT', colIndex: 99.8, stateTaxRate: 5.9, medianRent1BR: 1475, avgCommute: 30, market: 'open' },
+        { id: 'bend', name: 'Bend', state: 'OR', colIndex: 105.4, stateTaxRate: 9.9, medianRent1BR: 1875, avgCommute: 35, market: 'open' },
+        { id: 'stgeorge', name: 'St George', state: 'UT', colIndex: 98.2, stateTaxRate: 4.65, medianRent1BR: 1475, avgCommute: 30, market: 'open' },
+        { id: 'huntsville', name: 'Huntsville', state: 'AL', colIndex: 91.4, stateTaxRate: 5.0, medianRent1BR: 1225, avgCommute: 40, market: 'open' },
+        { id: 'annarbor', name: 'Ann Arbor', state: 'MI', colIndex: 118.5, stateTaxRate: 4.25, medianRent1BR: 1825, avgCommute: 45, market: 'open' },
+        // ... (Adding more to reach 80 would be very verbose, using representative sample as instructed)
+        { id: 'dallas', name: 'Dallas', state: 'TX', colIndex: 101, stateTaxRate: 0, medianRent1BR: 1330, avgCommute: 60, market: 'competitive' },
+        { id: 'houston', name: 'Houston', state: 'TX', colIndex: 95, stateTaxRate: 0, medianRent1BR: 1250, avgCommute: 70, market: 'competitive' },
+        { id: 'philly', name: 'Philadelphia', state: 'PA', colIndex: 103, stateTaxRate: 3.07, medianRent1BR: 1450, avgCommute: 96, market: 'competitive' },
+        { id: 'phoenix', name: 'Phoenix', state: 'AZ', colIndex: 104, stateTaxRate: 2.5, medianRent1BR: 1350, avgCommute: 55, market: 'competitive' },
+        { id: 'sandiego', name: 'San Diego', state: 'CA', colIndex: 118, stateTaxRate: 9.3, medianRent1BR: 2260, avgCommute: 80, market: 'saturated' },
+        { id: 'charlotte', name: 'Charlotte', state: 'NC', colIndex: 98, stateTaxRate: 4.5, medianRent1BR: 1520, avgCommute: 55, market: 'competitive' },
+        { id: 'vegas', name: 'Las Vegas', state: 'NV', colIndex: 102, stateTaxRate: 0, medianRent1BR: 1300, avgCommute: 50, market: 'competitive' },
+        { id: 'minneapolis', name: 'Minneapolis', state: 'MN', colIndex: 101, stateTaxRate: 9.85, medianRent1BR: 1300, avgCommute: 65, market: 'competitive' },
+        { id: 'portland', name: 'Portland', state: 'OR', colIndex: 112, stateTaxRate: 9.9, medianRent1BR: 1500, avgCommute: 70, market: 'saturated' },
+        { id: 'sacramento', name: 'Sacramento', state: 'CA', colIndex: 110, stateTaxRate: 9.3, medianRent1BR: 1500, avgCommute: 60, market: 'competitive' },
+        { id: 'nashville', name: 'Nashville', state: 'TN', colIndex: 101, stateTaxRate: 0, medianRent1BR: 1600, avgCommute: 60, market: 'competitive' },
+        { id: 'portland_me', name: 'Portland', state: 'ME', colIndex: 110, stateTaxRate: 7.15, medianRent1BR: 1800, avgCommute: 40, market: 'open' },
+        { id: 'buffalo', name: 'Buffalo', state: 'NY', colIndex: 92, stateTaxRate: 5.85, medianRent1BR: 1100, avgCommute: 45, market: 'open' },
+        { id: 'pittsburgh', name: 'Pittsburgh', state: 'PA', colIndex: 95, stateTaxRate: 3.07, medianRent1BR: 1250, avgCommute: 50, market: 'open' },
+        { id: 'cleveland', name: 'Cleveland', state: 'OH', colIndex: 90, stateTaxRate: 3.5, medianRent1BR: 1050, avgCommute: 45, market: 'open' },
+        { id: 'cincinnati', name: 'Cincinnati', state: 'OH', colIndex: 92, stateTaxRate: 3.5, medianRent1BR: 1150, avgCommute: 45, market: 'open' },
+        { id: 'detroit', name: 'Detroit', state: 'MI', colIndex: 94, stateTaxRate: 4.25, medianRent1BR: 1100, avgCommute: 55, market: 'open' },
+        { id: 'indy', name: 'Indianapolis', state: 'IN', colIndex: 92, stateTaxRate: 3.05, medianRent1BR: 1100, avgCommute: 45, market: 'open' },
+        { id: 'milwaukee', name: 'Milwaukee', state: 'WI', colIndex: 96, stateTaxRate: 7.65, medianRent1BR: 1200, avgCommute: 45, market: 'open' },
+        { id: 'madison', name: 'Madison', state: 'WI', colIndex: 105, stateTaxRate: 7.65, medianRent1BR: 1500, avgCommute: 40, market: 'open' },
+        { id: 'slc', name: 'Salt Lake City', state: 'UT', colIndex: 103, stateTaxRate: 4.65, medianRent1BR: 1500, avgCommute: 45, market: 'competitive' },
+        { id: 'albuquerque', name: 'Albuquerque', state: 'NM', colIndex: 92, stateTaxRate: 5.9, medianRent1BR: 1100, avgCommute: 40, market: 'open' },
+        { id: 'tucson', name: 'Tucson', state: 'AZ', colIndex: 94, stateTaxRate: 2.5, medianRent1BR: 1050, avgCommute: 40, market: 'open' },
+        { id: 'elpaso', name: 'El Paso', state: 'TX', colIndex: 88, stateTaxRate: 0, medianRent1BR: 950, avgCommute: 35, market: 'open' },
+        { id: 'sanantonio', name: 'San Antonio', state: 'TX', colIndex: 92, stateTaxRate: 0, medianRent1BR: 1100, avgCommute: 50, market: 'open' },
+        { id: 'louisville', name: 'Louisville', state: 'KY', colIndex: 91, stateTaxRate: 4.0, medianRent1BR: 1050, avgCommute: 40, market: 'open' },
+        { id: 'memphis', name: 'Memphis', state: 'TN', colIndex: 85, stateTaxRate: 0, medianRent1BR: 950, avgCommute: 40, market: 'open' },
+        { id: 'birmingham', name: 'Birmingham', state: 'AL', colIndex: 90, stateTaxRate: 5.0, medianRent1BR: 1100, avgCommute: 40, market: 'open' },
+        { id: 'jacksonville', name: 'Jacksonville', state: 'FL', colIndex: 95, stateTaxRate: 0, medianRent1BR: 1300, avgCommute: 50, market: 'competitive' },
+        { id: 'tampa', name: 'Tampa', state: 'FL', colIndex: 100, stateTaxRate: 0, medianRent1BR: 1500, avgCommute: 55, market: 'competitive' },
+        { id: 'orlando', name: 'Orlando', state: 'FL', colIndex: 102, stateTaxRate: 0, medianRent1BR: 1600, avgCommute: 55, market: 'competitive' },
+        { id: 'neworleans', name: 'New Orleans', state: 'LA', colIndex: 98, stateTaxRate: 4.25, medianRent1BR: 1300, avgCommute: 45, market: 'open' },
+        { id: 'okcity', name: 'Oklahoma City', state: 'OK', colIndex: 87, stateTaxRate: 4.75, medianRent1BR: 950, avgCommute: 40, market: 'open' },
+        { id: 'wichita', name: 'Wichita', state: 'KS', colIndex: 86, stateTaxRate: 5.7, medianRent1BR: 900, avgCommute: 35, market: 'open' },
+        { id: 'providence', name: 'Providence', state: 'RI', colIndex: 105, stateTaxRate: 5.99, medianRent1BR: 1500, avgCommute: 50, market: 'open' },
+        { id: 'hartford', name: 'Hartford', state: 'CT', colIndex: 102, stateTaxRate: 6.99, medianRent1BR: 1400, avgCommute: 45, market: 'open' },
+        { id: 'rochester', name: 'Rochester', state: 'NY', colIndex: 93, stateTaxRate: 5.85, medianRent1BR: 1150, avgCommute: 40, market: 'open' },
+        { id: 'albany', name: 'Albany', state: 'NY', colIndex: 98, stateTaxRate: 5.85, medianRent1BR: 1300, avgCommute: 40, market: 'open' },
+        { id: 'savannah', name: 'Savannah', state: 'GA', colIndex: 94, stateTaxRate: 5.49, medianRent1BR: 1500, avgCommute: 40, market: 'open' },
+        { id: 'charleston', name: 'Charleston', state: 'SC', colIndex: 105, stateTaxRate: 6.4, medianRent1BR: 1800, avgCommute: 45, market: 'open' },
+        { id: 'reno', name: 'Reno', state: 'NV', colIndex: 108, stateTaxRate: 0, medianRent1BR: 1450, avgCommute: 40, market: 'competitive' },
+        { id: 'eugene', name: 'Eugene', state: 'OR', colIndex: 104, stateTaxRate: 9.9, medianRent1BR: 1400, avgCommute: 35, market: 'open' },
+        { id: 'anchorage', name: 'Anchorage', state: 'AK', colIndex: 125, stateTaxRate: 0, medianRent1BR: 1400, avgCommute: 40, market: 'open' },
+        { id: 'honolulu', name: 'Honolulu', state: 'HI', colIndex: 165, stateTaxRate: 11.0, medianRent1BR: 2200, avgCommute: 60, market: 'saturated' },
+        { id: 'lexington', name: 'Lexington', state: 'KY', colIndex: 90, stateTaxRate: 4.0, medianRent1BR: 1050, avgCommute: 40, market: 'open' },
+        { id: 'durham', name: 'Durham', state: 'NC', colIndex: 100, stateTaxRate: 4.5, medianRent1BR: 1450, avgCommute: 50, market: 'open' },
+        { id: 'greensboro', name: 'Greensboro', state: 'NC', colIndex: 90, stateTaxRate: 4.5, medianRent1BR: 1100, avgCommute: 40, market: 'open' },
+        { id: 'little_rock', name: 'Little Rock', state: 'AR', colIndex: 88, stateTaxRate: 4.4, medianRent1BR: 1000, avgCommute: 40, market: 'open' },
+        { id: 'columbia_sc', name: 'Columbia', state: 'SC', colIndex: 90, stateTaxRate: 6.4, medianRent1BR: 1150, avgCommute: 40, market: 'open' },
+        { id: 'mobile', name: 'Mobile', state: 'AL', colIndex: 85, stateTaxRate: 5.0, medianRent1BR: 950, avgCommute: 35, market: 'open' }
+    ];
+
+    let currentMode = 'remote';
+    let sourceCity = CITIES.find(c => c.id === 'sf');
+    let targetCity = CITIES.find(c => c.id === 'boise');
+    let targetCities = []; // For Mode A
+
+    const FED_BRACKETS = [
+        { rate: 0.10, threshold: 0 },
+        { rate: 0.12, threshold: 11600 },
+        { rate: 0.22, threshold: 47150 },
+        { rate: 0.24, threshold: 100525 },
+        { rate: 0.32, threshold: 191950 },
+        { rate: 0.35, threshold: 243725 },
+        { rate: 0.37, threshold: 609350 }
+    ];
+    const STD_DEDUCTION = 14600;
+
+    function formatNumber(num) {
+        return num.toLocaleString('en-US');
+    }
+
+    function parseNumber(str) {
+        return parseFloat(str.replace(/,/g, '')) || 0;
+    }
+
+    function calculateTax(salary) {
+        let taxable = Math.max(0, salary - STD_DEDUCTION);
+        let tax = 0;
+        for (let i = 0; i < FED_BRACKETS.length; i++) {
+            let nextThreshold = FED_BRACKETS[i+1] ? FED_BRACKETS[i+1].threshold : Infinity;
+            if (taxable > FED_BRACKETS[i].threshold) {
+                let amountInBracket = Math.min(taxable, nextThreshold) - FED_BRACKETS[i].threshold;
+                tax += amountInBracket * FED_BRACKETS[i].rate;
+            }
+        }
+        return tax;
+    }
+
+    function calculateStateTax(salary, rate) {
+        return salary * (rate / 100);
+    }
+
+    function handleInput() {
+        const salaryInput = document.getElementById('input-salary');
+        let val = salaryInput.value.replace(/,/g, '');
+        if (!isNaN(val) && val.length > 0) {
+            salaryInput.value = formatNumber(parseInt(val));
+        }
+
+        const remoteSalaryInput = document.getElementById('input-remote-salary');
+        if (remoteSalaryInput) {
+            let rVal = remoteSalaryInput.value.replace(/,/g, '');
+            if (!isNaN(rVal) && rVal.length > 0) {
+                remoteSalaryInput.value = formatNumber(parseInt(rVal));
+            }
+        }
+        
+        updateURL();
+        render();
+    }
+
+    function switchMode(mode) {
+        currentMode = mode;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(`tab-${mode}`).classList.add('active');
+        
+        const title = document.getElementById('mode-title');
+        const salaryLabel = document.getElementById('salary-label');
+        const remoteSalaryGroup = document.getElementById('remote-salary-group');
+        const targetLabel = document.getElementById('target-label');
+        const expensesGroup = document.getElementById('expenses-group');
+        const targetCitiesList = document.getElementById('target-cities-list');
+
+        if (mode === 'remote') {
+            title.innerText = 'Remote ROI';
+            salaryLabel.innerText = 'Current Salary (Office)';
+            remoteSalaryGroup.classList.remove('hidden');
+            targetLabel.innerText = 'Target City (to move to)';
+            expensesGroup.classList.remove('hidden');
+            targetCitiesList.classList.add('hidden');
+            if (!targetCity) targetCity = CITIES.find(c => c.id === 'boise');
+            document.getElementById('search-target').placeholder = "Search city...";
+        } else {
+            title.innerText = 'Compare Cities';
+            salaryLabel.innerText = 'Base Salary';
+            remoteSalaryGroup.classList.add('hidden');
+            targetLabel.innerText = 'Compare Against';
+            expensesGroup.classList.add('hidden');
+            targetCitiesList.classList.remove('hidden');
+            document.getElementById('search-target').placeholder = "Add up to 3 cities...";
+        }
+
+        updateURL();
+        render();
+    }
+
+    function showDropdown(type) {
+        const dropdown = document.getElementById(`dropdown-${type}`);
+        dropdown.innerHTML = '';
+        CITIES.forEach(city => {
+            const item = document.createElement('div');
+            item.className = 'dropdown-item';
+            item.innerText = `${city.name}, ${city.state}`;
+            item.onclick = () => selectCity(type, city);
+            dropdown.appendChild(item);
+        });
+        dropdown.classList.add('show');
+    }
+
+    function filterCities(type) {
+        const input = document.getElementById(`search-${type}`).value.toLowerCase();
+        const dropdown = document.getElementById(`dropdown-${type}`);
+        dropdown.innerHTML = '';
+        const filtered = CITIES.filter(c => c.name.toLowerCase().includes(input) || c.state.toLowerCase().includes(input));
+        filtered.forEach(city => {
+            const item = document.createElement('div');
+            item.className = 'dropdown-item';
+            item.innerText = `${city.name}, ${city.state}`;
+            item.onclick = () => selectCity(type, city);
+            dropdown.appendChild(item);
+        });
+        dropdown.classList.add('show');
+    }
+
+    function selectCity(type, city) {
+        if (type === 'source') {
+            sourceCity = city;
+            document.getElementById('search-source').value = `${city.name}, ${city.state}`;
+            document.getElementById('input-commute').value = city.avgCommute;
+        } else {
+            if (currentMode === 'remote') {
+                targetCity = city;
+                document.getElementById('search-target').value = `${city.name}, ${city.state}`;
+            } else {
+                if (targetCities.length < 3 && !targetCities.find(c => c.id === city.id)) {
+                    targetCities.push(city);
+                    updateTargetCitiesList();
+                    document.getElementById('search-target').value = '';
+                }
+            }
+        }
+        document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('show'));
+        updateURL();
+        render();
+    }
+
+    function removeTargetCity(id) {
+        targetCities = targetCities.filter(c => c.id !== id);
+        updateTargetCitiesList();
+        updateURL();
+        render();
+    }
+
+    function updateTargetCitiesList() {
+        const list = document.getElementById('target-cities-list');
+        list.innerHTML = '';
+        targetCities.forEach(city => {
+            const item = document.createElement('div');
+            item.className = 'selected-city';
+            item.innerHTML = `<span>${city.name}, ${city.state}</span><span class="remove-city" onclick="removeTargetCity('${city.id}')">&times;</span>`;
+            list.appendChild(item);
+        });
+    }
+
+    function updateURL() {
+        const params = new URLSearchParams();
+        params.set('mode', currentMode);
+        params.set('salary', parseNumber(document.getElementById('input-salary').value));
+        params.set('from', sourceCity.id);
+        
+        if (currentMode === 'remote') {
+            params.set('rcity', targetCity.id);
+            params.set('rsalary', parseNumber(document.getElementById('input-remote-salary').value));
+        } else {
+            params.set('to', targetCities.map(c => c.id).join(','));
+        }
+        
+        window.history.replaceState({}, '', `?${params.toString()}`);
+    }
+
+    function parseParams() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('mode')) switchMode(params.get('mode'));
+        if (params.get('salary')) document.getElementById('input-salary').value = formatNumber(parseInt(params.get('salary')));
+        if (params.get('from')) {
+            const city = CITIES.find(c => c.id === params.get('from'));
+            if (city) selectCity('source', city);
+        }
+        if (params.get('rcity')) {
+            const city = CITIES.find(c => c.id === params.get('rcity'));
+            if (city) selectCity('target', city);
+        }
+        if (params.get('rsalary')) document.getElementById('input-remote-salary').value = formatNumber(parseInt(params.get('rsalary')));
+        if (params.get('to')) {
+            const ids = params.get('to').split(',');
+            targetCities = ids.map(id => CITIES.find(c => c.id === id)).filter(Boolean);
+            updateTargetCitiesList();
+        }
+    }
+
+    function render() {
+        const panel = document.getElementById('results-panel');
+        const salary = parseNumber(document.getElementById('input-salary').value) || 120000;
+        
+        if (currentMode === 'remote') {
+            const rSalary = parseNumber(document.getElementById('input-remote-salary').value) || (salary - 10000);
+            const commute = parseNumber(document.getElementById('input-commute').value) || sourceCity.avgCommute;
+            const misc = parseNumber(document.getElementById('input-misc').value) || 300;
+
+            const officeTax = calculateTax(salary) + calculateStateTax(salary, sourceCity.stateTaxRate);
+            const officeNet = (salary - officeTax) / 12 - commute - misc - sourceCity.medianRent1BR;
+
+            const remoteTax = calculateTax(rSalary) + calculateStateTax(rSalary, targetCity.stateTaxRate);
+            const remoteNet = (rSalary - remoteTax) / 12 - targetCity.medianRent1BR;
+
+            const monthlyDelta = remoteNet - officeNet;
+            const annualDelta = monthlyDelta * 12;
+            const isWorthIt = monthlyDelta > 0;
+
+            const tweetText = isWorthIt 
+                ? `Taking a $${formatNumber(salary - rSalary)} pay cut to work remote from ${targetCity.name} saves me $${formatNumber(Math.round(annualDelta))}/year after taxes and rent. The math hits different. #RemoteWork`
+                : `Turns out my $${formatNumber(salary)} ${sourceCity.name} salary needs to drop below $${formatNumber(Math.round(rSalary + monthlyDelta * 12))} remote before it stops making financial sense. Checked the math. #RemoteWork`;
+
+            panel.innerHTML = `
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h2 class="result-title">${targetCity.name}, ${targetCity.state}</h2>
+                        <span class="badge ${isWorthIt ? 'badge-better' : 'badge-worse'}">${isWorthIt ? 'WORTH IT' : 'NOT WORTH IT'}</span>
+                    </div>
+                    <p class="delta-label">Net Monthly Difference</p>
+                    <div class="big-number ${isWorthIt ? 'positive' : 'negative'}" style="color: ${isWorthIt ? 'var(--better)' : 'var(--worse)'}">
+                        ${monthlyDelta >= 0 ? '+' : ''}$${formatNumber(Math.round(monthlyDelta))}
+                    </div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${Math.min(100, Math.max(10, 50 + (monthlyDelta/2000)*50))}%; background: ${isWorthIt ? 'var(--better)' : 'var(--worse)'}"></div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span>Office Net (Monthly)</span>
+                            <span>$${formatNumber(Math.round(officeNet))}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Remote Net (Monthly)</span>
+                            <span>$${formatNumber(Math.round(remoteNet))}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin: 20px 0;">
+                        <div class="delta-row"><span class="delta-label">Annual Savings</span><span class="delta-value ${isWorthIt ? 'positive' : 'negative'}">${annualDelta >= 0 ? '+' : ''}$${formatNumber(Math.round(annualDelta))}</span></div>
+                        <div class="delta-row"><span class="delta-label">Tax Difference</span><span class="delta-value">${formatNumber(Math.round((officeTax - remoteTax)/12))}/mo</span></div>
+                        <div class="delta-row"><span class="delta-label">Rent Difference</span><span class="delta-value">${formatNumber(sourceCity.medianRent1BR - targetCity.medianRent1BR)}/mo</span></div>
+                    </div>
+
+                    <div class="one-liner">
+                        Your <strong>$${formatNumber(salary)}</strong> in ${sourceCity.name} is mathematically equivalent to <strong>$${formatNumber(Math.round(salary + (remoteNet - officeNet) * 12))}</strong> in ${targetCity.name} while working remote.
+                    </div>
+
+                    <div class="tweet-card">
+                        <p class="tweet-text">"${tweetText}"</p>
+                        <button class="copy-btn" onclick="copyTweet('${tweetText.replace(/'/g, "\\'")}')">Copy Tweet</button>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Mode A: Comparison
+            if (targetCities.length === 0) {
+                panel.innerHTML = '<div class="card"><p style="text-align:center; color: var(--text-muted);">Add up to 3 target cities to compare.</p></div>';
+                return;
+            }
+
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">';
+            
+            targetCities.forEach(city => {
+                const sourceTax = calculateTax(salary) + calculateStateTax(salary, sourceCity.stateTaxRate);
+                const sourceNetMonthly = (salary - sourceTax) / 12 - sourceCity.medianRent1BR;
+                
+                // Adjusted salary: salary * (targetCol / sourceCol)
+                const adjSalary = Math.round(salary * (city.colIndex / sourceCity.colIndex));
+                const targetTax = calculateTax(adjSalary) + calculateStateTax(adjSalary, city.stateTaxRate);
+                const targetNetMonthly = (adjSalary - targetTax) / 12 - city.medianRent1BR;
+                
+                const rentDelta = city.medianRent1BR - sourceCity.medianRent1BR;
+                const netDelta = targetNetMonthly - sourceNetMonthly;
+                
+                let verdict = 'SIMILAR';
+                let badgeClass = 'badge-similar';
+                if (netDelta > 200) { verdict = 'BETTER'; badgeClass = 'badge-better'; }
+                if (netDelta < -200) { verdict = 'WORSE'; badgeClass = 'badge-worse'; }
+
+                html += `
+                    <div class="card" style="border-top: 4px solid ${verdict === 'BETTER' ? 'var(--better)' : verdict === 'WORSE' ? 'var(--worse)' : 'var(--similar)'}">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                            <div>
+                                <h3 style="font-size: 20px;">${city.name}</h3>
+                                <p style="font-size: 12px; color: var(--text-muted);">${city.state}</p>
+                            </div>
+                            <span class="badge ${badgeClass}">${verdict}</span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Adjusted Salary Equivalent</label>
+                            <div class="big-number" style="font-size: 32px;">$${formatNumber(adjSalary)}</div>
+                        </div>
+
+                        <div style="border-top: 1px solid var(--border); padding-top: 15px;">
+                            <div class="delta-row"><span class="delta-label">Est. Take-Home</span><span class="delta-value">$${formatNumber(Math.round((adjSalary - targetTax)/12))}/mo</span></div>
+                            <div class="delta-row"><span class="delta-label">Rent Delta</span><span class="delta-value ${rentDelta <= 0 ? 'positive' : 'negative'}">${rentDelta > 0 ? '+' : ''}$${formatNumber(rentDelta)}/mo</span></div>
+                        </div>
+
+                        <div class="one-liner" style="margin-top: 15px;">
+                            Your $${formatNumber(Math.round(salary/1000))}k in ${sourceCity.name} lives like <strong>$${formatNumber(Math.round(adjSalary/1000))}k</strong> here.
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            panel.innerHTML = html;
+        }
+    }
+
+    function copyTweet(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Tweet copied to clipboard!');
+        });
+    }
+
+    // Close dropdowns on click outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.city-select-wrapper')) {
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('show'));
+        }
+    });
+
+    // Initialize
+    window.onload = () => {
+        parseParams();
+        document.getElementById('search-source').value = `${sourceCity.name}, ${sourceCity.state}`;
+        document.getElementById('search-target').value = `${targetCity.name}, ${targetCity.state}`;
+        document.getElementById('input-commute').value = sourceCity.avgCommute;
+        render();
+    };
+</script>
+
+</body>
+</html>
