@@ -152,7 +152,7 @@
     }
 
     .panel {
-      padding: 24px;
+      padding: 28px;
     }
 
     .title {
@@ -163,28 +163,29 @@
     }
 
     .field {
-      margin-bottom: 14px;
+      margin-bottom: 18px;
     }
 
     .field > label {
       display: block;
-      font-size: 13px;
+      font-size: 12px;
       letter-spacing: 0.07em;
       text-transform: uppercase;
       color: var(--muted);
       font-weight: 500;
-      margin-bottom: 10px;
+      margin-bottom: 11px;
     }
 
     .input, .city-chip, .add-city {
       width: 100%;
-      min-height: 52px;
+      min-height: 56px;
       border: 1px solid var(--border);
       border-radius: 5px;
       background: var(--field);
-      font-size: 30px;
+      font-size: 26px;
       color: var(--muted);
-      padding: 12px;
+      padding: 14px 12px;
+      line-height: 1.2;
     }
 
     .input {
@@ -218,8 +219,8 @@
     .dropdown.show { display: block; }
 
     .dropdown-item {
-      font-size: 22px;
-      padding: 10px 12px;
+      font-size: 20px;
+      padding: 12px;
       color: var(--muted);
       cursor: pointer;
     }
@@ -229,22 +230,23 @@
     .chip-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
     .city-chip {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 30px;
+      font-size: 26px;
       color: var(--muted);
-      padding-right: 10px;
+      padding: 14px 12px;
     }
 
     .chip-remove {
       border: 0;
       background: transparent;
-      font-size: 32px;
+      font-size: 28px;
       color: #444;
       line-height: 1;
       cursor: pointer;
@@ -266,7 +268,7 @@
     }
 
     .add-city .plus {
-      font-size: 28px;
+      font-size: 24px;
       line-height: 0;
       margin-top: -3px;
     }
@@ -274,11 +276,11 @@
     .result-stack {
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 32px;
     }
 
     .result-card {
-      padding: 24px;
+      padding: 28px;
       border-width: 2px;
     }
 
@@ -291,7 +293,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
 
     .result-city {
@@ -307,7 +309,7 @@
       align-items: center;
       gap: 8px;
       padding: 5px 12px;
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 600;
       white-space: nowrap;
     }
@@ -317,9 +319,9 @@
     .badge.worse { background: #f7e3e3; color: #7f1d1d; }
 
     .meta-label {
-      font-size: 16px;
+      font-size: 14px;
       color: var(--muted);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .money {
@@ -332,21 +334,21 @@
     .split {
       border-top: 1px solid #acabaa;
       border-bottom: 1px solid #acabaa;
-      padding: 10px;
+      padding: 14px 10px;
       display: grid;
       grid-template-columns: 1fr 1px 1fr;
       gap: 12px;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
     }
 
     .vline { width: 1px; background: var(--border); }
 
     .split-label {
-      font-size: 13px;
+      font-size: 12px;
       letter-spacing: 0.07em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .split-value {
@@ -359,8 +361,8 @@
       display: flex;
       justify-content: space-between;
       gap: 10px;
-      margin-bottom: 10px;
-      font-size: 24px;
+      margin-bottom: 14px;
+      font-size: 20px;
     }
 
     .delta-row .label { color: var(--muted); }
@@ -374,7 +376,7 @@
       border-radius: 6px;
       background: #9a9a9a;
       overflow: hidden;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .bar-fill {
@@ -387,8 +389,8 @@
       background: var(--field);
       border: 1px solid var(--border);
       border-radius: 5px;
-      padding: 12px;
-      font-size: 30px;
+      padding: 14px;
+      font-size: 24px;
       color: var(--muted);
       line-height: 1.25;
     }
@@ -396,17 +398,17 @@
     .liner strong { color: var(--green); }
 
     .tweet {
-      margin-top: 14px;
+      margin-top: 16px;
       border: 1px solid #91d4f9;
       background: #eef8ff;
       border-radius: 10px;
-      padding: 12px;
-      font-size: 18px;
+      padding: 14px;
+      font-size: 16px;
       color: #1d3557;
     }
 
     .tweet button {
-      margin-top: 10px;
+      margin-top: 12px;
       border: 0;
       border-radius: 18px;
       background: #1d9bf0;
@@ -454,13 +456,13 @@
       .page { padding: 16px 14px 24px; gap: 16px; }
       .panel { padding: 14px; }
       .title, .result-city { font-size: 34px; }
-      .field > label, .meta-label, .split-label { font-size: 12px; }
-      .input, .city-chip, .add-city, .liner { font-size: 24px; min-height: 46px; }
+      .field > label, .meta-label, .split-label { font-size: 11px; }
+      .input, .city-chip, .add-city, .liner { font-size: 20px; min-height: 46px; padding: 12px 10px; }
       .money { font-size: 40px; }
       .split-value { font-size: 30px; }
-      .delta-row { font-size: 20px; }
+      .delta-row { font-size: 17px; }
       .badge { font-size: 16px; min-height: 28px; }
-      .tweet { font-size: 16px; }
+      .tweet { font-size: 14px; }
     }
   </style>
 </head>
