@@ -6,18 +6,18 @@
   <title>Remote Work ROI Calculator — Is Taking a Pay Cut Worth It?</title>
   <meta name="description" content="Find out if working remotely for less money actually pays off after taxes, rent, and commute costs. Free calculator.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://yourdomain.com/">
+  <link rel="canonical" href="https://salary-vault.netlify.app/">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="Remote Work ROI Calculator — Is Taking a Pay Cut Worth It?">
   <meta property="og:description" content="Find out if a remote salary cut still wins after taxes, rent, commute, and work costs.">
-  <meta property="og:url" content="https://yourdomain.com/">
-  <meta property="og:image" content="https://yourdomain.com/og-image.png">
+  <meta property="og:url" content="https://salary-vault.netlify.app/">
+  <meta property="og:image" content="https://salary-vault.netlify.app/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Remote Work ROI Calculator — Is Taking a Pay Cut Worth It?">
   <meta name="twitter:description" content="Run side-by-side office vs remote math with taxes, rent, and commute included.">
-  <meta name="twitter:image" content="https://yourdomain.com/og-image.png">
+  <meta name="twitter:image" content="https://salary-vault.netlify.app/og-image.png">
 
   <script type="application/ld+json">
   {
@@ -527,7 +527,7 @@
   <footer class="footer">
     <p>Not financial advice. Tax estimates use standard deduction, single filer, 2024 federal brackets. State taxes are flat estimates.</p>
     <p>Data sourced from BLS, Census, and public CoL indices (2024).</p>
-    <a href="#">GitHub</a>
+    <a href="https://github.com/kevinnguyen-design/Salary-Vault" target="_blank" rel="noreferrer">GitHub</a>
   </footer>
 
   <div id="ad-top" class="ad-slot" data-size="728x90"></div>
@@ -558,6 +558,7 @@
     ];
     const STANDARD_DEDUCTION_2024_SINGLE = 14600;
     let apiAvailable = location.protocol !== "file:";
+    const DEFAULT_SITE_URL = "https://salary-vault.netlify.app";
     const FALLBACK_CITIES = [
       { id: "nyc", name: "New York City", state: "NY", colIndex: 128, stateTaxRate: 5.85, medianRent1BR: 4100, avgCommuteCostMonthly: 132 },
       { id: "sf", name: "San Francisco", state: "CA", colIndex: 122, stateTaxRate: 9.3, medianRent1BR: 3100, avgCommuteCostMonthly: 98 },
@@ -575,6 +576,38 @@
 
     function fmt(value) {
       return Number(value || 0).toLocaleString("en-US");
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function safeCityId(value) {
+      return String(value || "").replace(/[^a-zA-Z0-9_-]/g, "");
+    }
+
+    function getSiteUrl() {
+      if (location.protocol === "http:" || location.protocol === "https:") {
+        return location.origin;
+      }
+      return DEFAULT_SITE_URL;
+    }
+
+    function applyRuntimeMeta() {
+      const siteUrl = getSiteUrl();
+      const canonical = document.querySelector("link[rel='canonical']");
+      const ogUrl = document.querySelector("meta[property='og:url']");
+      const ogImage = document.querySelector("meta[property='og:image']");
+      const twImage = document.querySelector("meta[name='twitter:image']");
+      if (canonical) canonical.href = `${siteUrl}/`;
+      if (ogUrl) ogUrl.content = `${siteUrl}/`;
+      if (ogImage) ogImage.content = `${siteUrl}/og-image.png`;
+      if (twImage) twImage.content = `${siteUrl}/og-image.png`;
     }
 
     function parseNum(value) {
@@ -673,7 +706,7 @@
       el.innerHTML = state.targetCityIds
         .map((id) => byId(id))
         .filter(Boolean)
-        .map((city) => `<div class="city-chip">${city.name}, ${city.state}<button class="chip-remove" data-id="${city.id}">&times;</button></div>`)
+        .map((city) => `<div class="city-chip">${escapeHtml(city.name)}, ${escapeHtml(city.state)}<button class="chip-remove" data-id="${safeCityId(city.id)}">&times;</button></div>`)
         .join("");
       el.querySelectorAll(".chip-remove").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -711,10 +744,13 @@
       const deltaClass = style.cls === "better" ? "better" : style.cls === "worse" ? "worse" : "similar";
       const fillColor = style.cls === "better" ? "var(--green)" : style.cls === "worse" ? "#7f1d1d" : "#4b4b4b";
 
+      const cityName = escapeHtml(card.cityName);
+      const cityState = escapeHtml(card.state);
+      const sourceName = escapeHtml(source.name);
       return `
         <article class="result-card ${colorClass}">
           <div class="result-head">
-            <h2 class="result-city">${card.cityName}, ${card.state}</h2>
+            <h2 class="result-city">${cityName}, ${cityState}</h2>
             <span class="badge ${colorClass}">${style.icon} ${style.text} (${pct >= 0 ? "+" : ""}${pct}%)</span>
           </div>
           <p class="meta-label">Adjusted Salary Equivalent</p>
@@ -735,7 +771,7 @@
             <span class="value ${deltaClass}">${card.rentDelta > 0 ? "+" : ""}$${fmt(Math.round(card.rentDelta))}/mo</span>
           </div>
           <div class="bar-track"><div class="bar-fill" style="width:${progress}%; background:${fillColor};"></div></div>
-          <p class="liner">Your $${fmt(gross)} in ${source.name} lives like <strong>$${fmt(Math.round(card.adjustedSalary / 1000) * 1000)}</strong> here.</p>
+          <p class="liner">Your $${fmt(gross)} in ${sourceName} lives like <strong>$${fmt(Math.round(card.adjustedSalary / 1000) * 1000)}</strong> here.</p>
         </article>
       `;
     }
@@ -744,13 +780,19 @@
       const good = result.monthlyDelta >= 0;
       const fill = Math.min(100, Math.max(8, 50 + result.monthlyDelta / 30));
       const color = good ? "var(--green)" : "#7f1d1d";
+      const sourceNameRaw = String(source.name);
+      const targetNameRaw = String(target.name);
+      const sourceName = escapeHtml(sourceNameRaw);
+      const targetName = escapeHtml(targetNameRaw);
+      const targetState = escapeHtml(target.state);
+      const link = `${getSiteUrl()}/`;
       const tweet = good
-        ? `Taking a $${fmt(Math.max(0, state.salary - state.remoteSalary))} pay cut to work remote from ${target.name} saves me $${fmt(Math.round(result.annualDelta))}/year after taxes and rent. The math hits different. https://yourdomain.com`
-        : `Turns out my $${fmt(state.salary)} ${source.name} salary needs to drop below $${fmt(Math.round(state.remoteSalary + result.monthlyDelta * 12))} remote before it stops making financial sense. Checked the math. https://yourdomain.com`;
+        ? `Taking a $${fmt(Math.max(0, state.salary - state.remoteSalary))} pay cut to work remote from ${targetNameRaw} saves me $${fmt(Math.round(result.annualDelta))}/year after taxes and rent. The math hits different. ${link}`
+        : `Turns out my $${fmt(state.salary)} ${sourceNameRaw} salary needs to drop below $${fmt(Math.round(state.remoteSalary + result.monthlyDelta * 12))} remote before it stops making financial sense. Checked the math. ${link}`;
       return `
         <article class="result-card ${good ? "better" : "worse"}">
           <div class="result-head">
-            <h2 class="result-city">${target.name}, ${target.state}</h2>
+            <h2 class="result-city">${targetName}, ${targetState}</h2>
             <span class="badge ${good ? "better" : "worse"}">${good ? "↑ WORTH IT" : "↓ NOT WORTH IT"}</span>
           </div>
           <p class="meta-label">Net Monthly Difference</p>
@@ -771,9 +813,9 @@
             <span class="value ${good ? "better" : "worse"}">${result.annualDelta >= 0 ? "+" : ""}$${fmt(Math.round(result.annualDelta))}</span>
           </div>
           <div class="bar-track"><div class="bar-fill" style="width:${fill}%; background:${color};"></div></div>
-          <p class="liner">Your $${fmt(state.salary)} in ${source.name} lives like <strong>$${fmt(Math.round(state.salary + result.monthlyDelta * 12))}</strong> in ${target.name} after rent and tax assumptions.</p>
+          <p class="liner">Your $${fmt(state.salary)} in ${sourceName} lives like <strong>$${fmt(Math.round(state.salary + result.monthlyDelta * 12))}</strong> in ${targetName} after rent and tax assumptions.</p>
           <div class="tweet">
-            <p>"${tweet}"</p>
+            <p>"${escapeHtml(tweet)}"</p>
             <button type="button" id="copy-tweet">Copy Tweet</button>
           </div>
         </article>
@@ -892,7 +934,7 @@
         dropdown.innerHTML = state.cities
           .filter((city) => `${city.name}, ${city.state}`.toLowerCase().includes(query))
           .slice(0, 50)
-          .map((city) => `<div class="dropdown-item" data-id="${city.id}">${city.name}, ${city.state}</div>`)
+          .map((city) => `<div class="dropdown-item" data-id="${safeCityId(city.id)}">${escapeHtml(city.name)}, ${escapeHtml(city.state)}</div>`)
           .join("");
         dropdown.classList.add("show");
         dropdown.querySelectorAll(".dropdown-item").forEach((item) => {
@@ -918,6 +960,7 @@
     }
 
     async function init() {
+      applyRuntimeMeta();
       try {
         const response = await fetch("./data/cities.json", { cache: "no-store" });
         state.cities = await response.json();
